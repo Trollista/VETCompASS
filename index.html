@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="cs" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VETCompASS</title>
+<style>
+:root{--bg:#0a0a0b;--card:#18181b;--hover:#27272a;--text:#fafafa;--mut:#a1a1aa;--acc:#10b981;--acc2:#059669}
+[data-theme=light]{--bg:#fafafa;--card:#fff;--hover:#f4f4f5;--text:#18181b;--mut:#71717a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh}
+header{position:sticky;top:0;display:flex;gap:.6rem;align-items:center;padding:.7rem 1rem;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(8px);z-index:10}
+.logo{font-weight:800;font-size:1.1rem;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+header input{flex:1;max-width:420px;background:var(--card);border:1px solid var(--hover);border-radius:10px;padding:.5rem .8rem;color:var(--text);outline:none}
+header button{background:var(--card);border:1px solid var(--hover);border-radius:10px;padding:.45rem .7rem;color:var(--text);cursor:pointer}
+select{background:var(--card);color:var(--text);border:1px solid var(--hover);border-radius:10px;padding:.45rem}
+main{max-width:1100px;margin:0 auto;padding:1rem}
+/* landing */
+#landing{text-align:center;padding:4rem 1rem}
+#landing h1{font-size:2.4rem;margin-bottom:.4rem}
+#landing p{color:var(--mut);margin-bottom:2rem}
+.profiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:760px;margin:0 auto}
+.pcard{background:var(--card);border:1px solid var(--hover);border-radius:18px;padding:1.6rem 1rem;cursor:pointer;transition:.2s}
+.pcard:hover{transform:translateY(-4px);border-color:var(--acc)}
+.pcard .e{font-size:2.2rem}
+/* widgets */
+.widgets{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1rem}
+.widget{background:var(--card);border:1px solid var(--hover);border-radius:16px;padding:1rem}
+.widget b{font-size:1.3rem}
+/* chips */
+#chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.chip{background:var(--card);border:1px solid var(--hover);border-radius:999px;padding:.35rem .9rem;cursor:pointer;color:var(--mut);font-size:.85rem}
+.chip.on{background:var(--acc);color:#04120b;border-color:var(--acc);font-weight:600}
+/* bento grid */
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--hover);border-radius:16px;padding:1rem;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:.5rem}
+.card:hover{transform:scale(1.03);border-color:var(--acc)}
+.card.big{grid-column:span 2}
+.card .e{font-size:1.6rem}
+.card h3{font-size:.95rem}
+.card p{font-size:.8rem;color:var(--mut);flex:1}
+.tags{display:flex;gap:.35rem;flex-wrap:wrap}
+.tag{font-size:.65rem;border-radius:999px;padding:.15rem .5rem;font-weight:600}
+.t-free{background:#14532d;color:#86efac}.t-institutional{background:#713f12;color:#fde047}
+.t-freemium{background:#1e3a8a;color:#93c5fd}.t-paid{background:#7f1d1d;color:#fca5a5}
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20;padding:1rem}
+#modal.open{display:flex}
+.mbox{background:var(--card);border:1px solid var(--hover);border-radius:20px;max-width:560px;width:100%;padding:1.6rem;max-height:80vh;overflow:auto}
+.mbox h2{margin-bottom:.6rem}
+.mbox p{color:var(--mut);margin-bottom:1rem;line-height:1.5}
+.mbox ul{color:var(--mut);margin:0 0 1rem 1.2rem;line-height:1.7}
+.mrow{display:flex;gap:.6rem;flex-wrap:wrap}
+.mrow a,.mrow button{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#04120b;border:none;border-radius:10px;padding:.55rem 1rem;font-weight:700;text-decoration:none;cursor:pointer}
+.mrow .sec{background:var(--hover);color:var(--text)}
+footer{max-width:1100px;margin:2rem auto;padding:1rem;color:var(--mut);font-size:.75rem;text-align:center;line-height:1.7}
+#top{position:fixed;right:1rem;bottom:1rem;background:var(--card);border:1px solid var(--hover);border-radius:50%;width:44px;height:44px;cursor:pointer;color:var(--text);display:none}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">🐾 VETCompASS</span>
+  <input id="q" placeholder="">
+  <select id="profSel" hidden><option value="student">🎓 Student</option><option value="vedec">🔬 Vědec</option><option value="praktik">🩺 Praktik</option></select>
+  <button id="langBtn">🇬</button>
+  <button id="themeBtn">☀️</button>
+</header>
+<main>
+  <section id="landing">
+    <h1 class="logo" style="font-size:2.6rem">🐾 VETCompASS</h1>
+    <p id="tagline"></p>
+    <div class="profiles">
+      <div class="pcard" data-p="student"><div class="e">🎓</div><h3>Student</h3><p id="pd-student"></p></div>
+      <div class="pcard" data-p="vedec"><div class="e">🔬</div><h3 id="pn-vedec"></h3><p id="pd-vedec"></p></div>
+      <div class="pcard" data-p="praktik"><div class="e">🩺</div><h3 id="pn-praktik"></h3><p id="pd-praktik"></p></div>
+    </div>
+  </section>
+  <section id="dash" hidden>
+    <div class="widgets">
+      <div class="widget">🔥 <b id="streak">1</b> <span id="streakLbl"></span></div>
+      <div class="widget">📊 <b id="prog">0%</b> <span id="progLbl"></span></div>
+    </div>
+    <div id="chips"></div>
+    <div id="grid"></div>
+  </section>
+</main>
+<footer id="foot"></footer>
+<button id="top">↑</button>
+<div id="modal"><div class="mbox" id="mbox"></div></div>
+<script>
+/* ---------- DATA ---------- */
+const UI={
+ cs:{tag:"Komunitní survival kit pro studenty VETUNI Brno",search:"Hledat zdroje… (Ctrl+K)",all:"Vše",
+     p:{student:"Skripta, anatomie, poznávačky, první kroky",vedec:"Vědec",praktik:"Praktik",
+        dvedec:"Databáze, open science, FAIR data, citace",dpraktik:"Klinika, komory, legislativa"},
+     streak:"dní v řadě",prog:"prozkoumáno",open:"Otevřít zdroj ↗",fav:"⭐ Oblíbené",back:"Zavřít",
+     foot:"Toto není oficiální aplikace VETUNI · Komunitní projekt · Kód: MIT · Obsah: CC BY 4.0 · Otevřené navždy · v0.1"},
+ en:{tag:"Community survival kit for VETUNI Brno students",search:"Search resources… (Ctrl+K)",all:"All",
+     p:{student:"Notes, anatomy, drills, first steps",vedec:"Researcher",praktik:"Practitioner",
+        dvedec:"Databases, open science, FAIR data, citations",dpraktik:"Clinics, chambers, legislation"},
+     streak:"day streak",prog:"explored",open:"Open resource ↗",fav:"⭐ Favourite",back:"Close",
+     foot:"Not an official VETUNI app · Community project · Code: MIT · Content: CC BY 4.0 · Open forever · v0.1"}};
+const CATS={
+ "anatomie":{e:"🦴",cs:"Anatomie & poznávačky",en:"Anatomy & drills"},
+ "gamifikace":{e:"🎮",cs:"Hry & kvízy",en:"Games & quizzes"},
+ "databaze":{e:"🗄️",cs:"Databáze & open science",en:"Databases & open science"},
+ "nastroje":{e:"🧰",cs:"Užitečné nástroje",en:"Useful tools"},
+ "legislativa":{e:"⚖️",cs:"Legislativa",en:"Legislation"},
+ "komory":{e:"🏛️",cs:"Komory & asociace",en:"Chambers & associations"},
+ "spolky":{e:"👥",cs:"Komunita & spolky",en:"Community & clubs"},
+ "roadmapa":{e:"🗓️",cs:"Roadmapa studenta",en:"Student roadmap"},
+ "emergency":{e:"🆘",cs:"Emergency kit",en:"Emergency kit"},
+ "praxe":{e:"🐄",cs:"Praxe & stáže",en:"Practice & internships"}};
+const SOURCES=[
+ {id:"ivala",name:"IVALA Learn",cat:"anatomie",prof:["student"],tag:"institutional",big:1,url:"https://www.ivalalearn.com/",
+  d:{cs:"3D modely zvířat, zdarma pro studenty VETUNI přes VIN (registrace univerzitním mailem).",en:"3D animal models, free for VETUNI students via VIN (register with your university e-mail)."}},
+ {id:"pg-dog",name:"PurposeGames – Dog Anatomy",cat:"gamifikace",prof:["student"],tag:"free",big:1,url:"https://www.purposegames.com/",
+  d:{cs:"Rychlokliky na čas na slepé mapě psa – dril kostí a svalů formou hry.",en:"Timed click challenges on a blind dog map – bones & muscles drilled as a game."}},
+ {id:"quizlet",name:"Quizlet – Vet sady",cat:"anatomie",prof:["student"],tag:"freemium",url:"https://quizlet.com/",
+  d:{cs:"Kartičky latina ↔ čeština, režim Match; hotové sady od starších studentů.",en:"Latin ↔ Czech flashcards, Match mode; ready-made sets by senior students."}},
+ {id:"anatl",name:"AnatomyLearning",cat:"anatomie",prof:["student"],tag:"freemium",url:"https://anatomylearning.com/",
+  d:{cs:"3D kvízy – otáčíš modelem a hledáš svaly a nervy.",en:"3D quizzes – rotate the model and find muscles & nerves."}},
+ {id:"slicer",name:"3D Slicer / Horos",cat:"anatomie",prof:["student","vedec"],tag:"free",url:"https://www.slicer.org/",
+  d:{cs:"Open-source prohlížeč DICOM – vlastní 3D renderování z reálných CT/MRI.",en:"Open-source DICOM viewer – build your own 3D renders from real CT/MRI."}},
+ {id:"umn",name:"U of Minnesota – Vet Anatomy",cat:"anatomie",prof:["student"],tag:"free",url:"https://open.lib.umn.edu/",
+  d:{cs:"Veřejné 3D atlasy a lekce (pes, kůň, skot) + tabulky latinských kořenů.",en:"Public 3D atlases & lessons (dog, horse, cattle) + Latin/Greek root tables."}},
+ {id:"pubmed",name:"PubMed",cat:"databaze",prof:["vedec","praktik"],tag:"institutional",url:"https://pubmed.ncbi.nlm.nih.gov/",
+  d:{cs:"Hlavní biomedicínská databáze; přes VPN/UNB plné texty.",en:"The main biomedical database; full texts via university access."}},
+ {id:"cab",name:"CAB Abstracts",cat:"databaze",prof:["vedec"],tag:"institutional",url:"https://www.cabidigitallibrary.org/",
+  d:{cs:"Největší databáze pro veterinu a zemědělství.",en:"The largest database for veterinary science & agriculture."}},
+ {id:"zenodo",name:"Zenodo",cat:"databaze",prof:["vedec"],tag:"free",url:"https://zenodo.org/",
+  d:{cs:"Open repozitář pro data i preprinty s DOI.",en:"Open repository for data & preprints with DOI."}},
+ {id:"zotero",name:"Zotero",cat:"nastroje",prof:["vedec","student"],tag:"free",url:"https://www.zotero.org/",
+  d:{cs:"Správa citací zdarma – našeptává DOI, hlídá bibliografie.",en:"Free citation manager – autocompletes DOIs, keeps bibliographies tidy."}},
+ {id:"deepl",name:"DeepL",cat:"nastroje",prof:["student","vedec","praktik"],tag:"freemium",url:"https://www.deepl.com/",
+  d:{cs:"Nejlepší překladač odborných textů EN↔CS.",en:"Best translator for EN↔CS scientific texts."}},
+ {id:"z166",name:"Zákon 166/1999 Sb.",cat:"legislativa",prof:["student","praktik"],tag:"free",url:"https://www.zakonyprolidi.cz/cs/1999-166",
+  d:{cs:"O veterinární péči – základní zákon oboru.",en:"Veterinary Care Act – the core law of the field."}},
+ {id:"z246",name:"Zákon 246/1992 Sb.",cat:"legislativa",prof:["student","praktik"],tag:"free",url:"https://www.zakonyprolidi.cz/cs/1992-246",
+  d:{cs:"Na ochranu zvířat proti týrání – welfare základ.",en:"Animal protection against cruelty – the welfare cornerstone."}},
+ {id:"eu6",name:"Nařízení (EU) 2019/6",cat:"legislativa",prof:["praktik"],tag:"free",url:"https://eur-lex.europa.eu/eli/reg/2019/6/oj",
+  d:{cs:"O veterinárních léčivých přípravcích – klíčové EU právo.",en:"Veterinary medicinal products – key EU regulation."}},
+ {id:"kvl",name:"KVL ČR",cat:"komory",prof:["praktik"],tag:"free",url:"https://www.kvl.cz/",
+  d:{cs:"Komora veterinárních lékařů – stavovské předpisy, etický kodex.",en:"Czech Veterinary Chamber – professional rules & code of ethics."}},
+ {id:"ivsa",name:"IVSA Brno",cat:"spolky",prof:["student"],tag:"free",url:"https://www.ivsa.org/",
+  d:{cs:"Mezinárodní studentská asociace – výměny, kongresy, twinning.",en:"International veterinary students' association – exchanges & congresses."}},
+ {id:"road1",name:"První týden na VETUNI",cat:"roadmapa",prof:["student"],tag:"free",
+  d:{cs:"Co tě čeká a jak to zvládnout.",en:"What awaits you and how to handle it."},
+  c:{cs:["Imatrikulace, slib, index","Registrace IS + Moodle + knihovna","Najdi pitevnu aulu a kantýnu","ISIC a zdravotní prohlídka"],
+     en:["Matriculation, oath, index book","Register IS + Moodle + library","Find the dissection hall & canteen","ISIC card & health check"]}},
+ {id:"em1",name:"Když nevím, co dál",cat:"emergency",prof:["student"],tag:"free",
+  d:{cs:"Rychlé kontakty a postupy.",en:"Quick contacts & procedures."},
+  c:{cs:["Onemocnění → studijní oddělení + omluvenka do 3 dnů","Ztráta indexu → studijní oddělení, duplikát","Stres/úzkost → studentská poradna VETUNI","Nestíhám deadline → okamžitě e-mail vyučujícímu"],
+     en:["Illness → study dept. + sick note within 3 days","Lost index → study dept., duplicate issued","Stress → student counselling centre","Deadline at risk → e-mail the teacher immediately"]}},
+ {id:"prax1",name:"Erasmus+ & IVSA stáže",cat:"praxe",prof:["student","praktik"],tag:"free",url:"https://www.ivsa.org/",
+  d:{cs:"Zahraniční praxe a výměnné pobyty.",en:"Internships & exchange stays abroad."}}];
+/* ---------- STATE ---------- */
+let S=JSON.parse(localStorage.getItem("vc")||"{}");
+S.lang=S.lang||(navigator.language.startsWith("cs")?"cs":"en");
+S.theme=S.theme||"dark";S.profile=S.profile||null;
+S.fav=S.fav||[];S.seen=S.seen||[];S.cat=S.cat||null;S.q=S.q||"";
+/* streak */
+const today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString();
+if(S.last!==today){S.streak=(S.last===yest)?(S.streak||0)+1:1;S.last=today;}
+const save=()=>localStorage.setItem("vc",JSON.stringify(S));
+const $=s=>document.querySelector(s),L=()=>UI[S.lang];
+/* ---------- RENDER ---------- */
+function applyTheme(){document.documentElement.dataset.theme=S.theme;$("#themeBtn").textContent=S.theme==="dark"?"☀️":"";}
+function applyLang(){document.documentElement.lang=S.lang;$("#langBtn").textContent=S.lang==="cs"?"🇬🇧":"🇨🇿";
+ $("#q").placeholder=L().search;$("#tagline").textContent=L().tag;$("#foot").textContent=L().foot;
+ $("#pn-vedec").textContent=L().p.vedec;$("#pn-praktik").textContent=L().p.praktik;
+ $("#pd-student").textContent=L().p.student;$("#pd-vedec").textContent=L().p.dvedec;$("#pd-praktik").textContent=L().p.dpraktik;
+ $("#streakLbl").textContent=L().streak;$("#progLbl").textContent=L().prog;}
+function renderChips(){const c=$("#chips");c.innerHTML="";
+ const mk=(id,lab)=>{const b=document.createElement("button");b.className="chip"+(S.cat===id?" on":"");b.textContent=lab;
+  b.onclick=()=>{S.cat=S.cat===id?null:id;save();renderChips();renderGrid();};c.appendChild(b);};
+ mk(null,L().all);for(const k in CATS)mk(k,CATS[k].e+" "+CATS[k][S.lang]);}
+function renderGrid(){const g=$("#grid");g.innerHTML="";
+ const list=SOURCES.filter(x=>x.prof.includes(S.profile)&&(!S.cat||x.cat===S.cat)&&
+  (!S.q||(x.name+" "+x.d[S.lang]).toLowerCase().includes(S.q.toLowerCase())));
+ list.forEach(x=>{const d=document.createElement("div");d.className="card"+(x.big?" big":"");
+  d.innerHTML=`<div class="e">${CATS[x.cat].e}</div><h3>${S.fav.includes(x.id)?"⭐ ":""}${x.name}</h3>
+  <p>${x.d[S.lang]}</p><div class="tags"><span class="tag t-${x.tag}">${x.tag}</span></div>`;
+  d.onclick=()=>openModal(x);g.appendChild(d);});
+ $("#prog").textContent=Math.round(S.seen.length/SOURCES.length*100)+"%";}
+function openModal(x){if(!S.seen.includes(x.id)){S.seen.push(x.id);save();}
+ const m=$("#mbox");let inner=`<h2>${CATS[x.cat].e} ${x.name}</h2><p>${x.d[S.lang]}</p>`;
+ if(x.c)inner+=`<ul>${x.c[S.lang].map(i=>`<li>${i}</li>`).join("")}</ul>`;
+ inner+=`<div class="mrow">${x.url?`<a href="${x.url}" target="_blank">${L().open}</a>`:""}
+ <button class="sec" onclick="toggleFav('${x.id}')">${L().fav}</button>
+ <button class="sec" onclick="closeModal()">${L().back}</button></div>`;
+ m.innerHTML=inner;$("#modal").classList.add("open");renderGrid();}
+window.closeModal=()=>$("#modal").classList.remove("open");
+window.toggleFav=id=>{S.fav=S.fav.includes(id)?S.fav.filter(f=>f!==id):[...S.fav,id];save();renderGrid();};
+/* ---------- EVENTS ---------- */
+document.querySelectorAll(".pcard").forEach(p=>p.onclick=()=>{S.profile=p.dataset.p;save();showDash();});
+$("#profSel").onchange=e=>{S.profile=e.target.value;save();renderChips();renderGrid();};
+$("#langBtn").onclick=()=>{S.lang=S.lang==="cs"?"en":"cs";save();applyLang();renderChips();renderGrid();};
+$("#themeBtn").onclick=()=>{S.theme=S.theme==="dark"?"light":"dark";save();applyTheme();};
+$("#q").oninput=e=>{S.q=e.target.value;renderGrid();};
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="k"){e.preventDefault();$("#q").focus();}
+ if(e.key==="Escape")closeModal();});
+$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal();};
+window.onscroll=()=>{$("#top").style.display=scrollY>300?"block":"none";};
+$("#top").onclick=()=>scrollTo({top:0,behavior:"smooth"});
+function showDash(){$("#landing").hidden=true;$("#dash").hidden=false;$("#profSel").hidden=false;
+ $("#profSel").value=S.profile;$("#streak").textContent=S.streak||1;renderChips();renderGrid();}
+/* init */
+applyTheme();applyLang();save();
+if(S.profile)showDash();
+</script>
+</body>
+</html>
